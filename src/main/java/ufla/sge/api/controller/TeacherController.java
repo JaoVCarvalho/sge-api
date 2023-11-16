@@ -37,7 +37,7 @@ public class TeacherController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TeacherListingData> listTeacherById(@PathVariable Long id) {
+    public ResponseEntity<TeacherListingData> listTeacherById(@PathVariable Integer id) {
         var teacher = repository.getReferenceById(id);
 
         return ResponseEntity.ok(new TeacherListingData(teacher));
@@ -54,7 +54,7 @@ public class TeacherController {
 
     @DeleteMapping("/{id}")
     @Transactional
-    public ResponseEntity deleteTeacher(@PathVariable Long id){
+    public ResponseEntity deleteTeacher(@PathVariable Integer id){
         repository.deleteById(id);
 
         return ResponseEntity.noContent().build();
