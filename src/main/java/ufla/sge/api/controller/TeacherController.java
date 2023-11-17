@@ -11,6 +11,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import ufla.sge.api.domain.teacher.*;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @RestController
 @RequestMapping("/teachers")
 public class TeacherController {
@@ -18,6 +22,7 @@ public class TeacherController {
     @Autowired
     private TeacherRepository repository;
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PostMapping
     @Transactional
     public ResponseEntity<TeacherDetailData> registerTeacher(@RequestBody @Valid TeacherRegistrationData data, UriComponentsBuilder uriBuilder) {
@@ -29,29 +34,34 @@ public class TeacherController {
         return ResponseEntity.created(uri).body(new TeacherDetailData(teacher));
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @GetMapping
-    public ResponseEntity<Page<TeacherListingData>> listTeachers(@PageableDefault(size = 10, sort = "name") Pageable page) {
-        var aux = repository.findAll(page).map(TeacherListingData::new);
+    public ResponseEntity<List<TeacherListingData>> listTeachers() {
 
-        return ResponseEntity.ok(aux);
+        List<TeacherListingData> teachers = repository.findAll().stream().map(TeacherListingData::new).collect(Collectors.toList());
+
+        return ResponseEntity.ok(teachers);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<TeacherListingData> listTeacherById(@PathVariable Integer id) {
-        var teacher = repository.getReferenceById(id);
+//    @CrossOrigin(origins = "*", allowedHeaders = "*")
+//    @GetMapping("/{id}")
+//    public ResponseEntity<TeacherListingData> listTeacherById(@PathVariable Integer id) {
+//        var teacher = repository.getReferenceById(id);
+//
+//        return ResponseEntity.ok(new TeacherListingData(teacher));
+//    }
 
-        return ResponseEntity.ok(new TeacherListingData(teacher));
-    }
-
-    @PutMapping
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @PatchMapping("/{id}")
     @Transactional
-    public ResponseEntity<TeacherDetailData> updateTeacher(@RequestBody @Valid TeacherUpdateData data){
-        var teacher = repository.getReferenceById(data.id());
+    public ResponseEntity<TeacherDetailData> updateTeacher(@RequestBody @Valid TeacherUpdateData data, @PathVariable Integer id){
+        var teacher = repository.getReferenceById(id);
         teacher.update(data);
 
         return ResponseEntity.ok(new TeacherDetailData(teacher));
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @DeleteMapping("/{id}")
     @Transactional
     public ResponseEntity deleteTeacher(@PathVariable Integer id){
