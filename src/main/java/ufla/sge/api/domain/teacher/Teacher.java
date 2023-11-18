@@ -29,7 +29,7 @@ public class Teacher {
     @Enumerated(EnumType.STRING)
     private Education_level education_level;
 
-    public Teacher(TeacherRegistrationData data){
+    public Teacher(TeacherRegistrationDTO data){
         this.name = data.name();
         this.department = data.department();
         this.graduated_in = data.graduated_in();
@@ -37,7 +37,7 @@ public class Teacher {
 
     }
 
-    public void update(TeacherUpdateData data){
+    public void update(TeacherUpdateDTO data){
         this.name = data.name();
         this.department = data.department();
         this.graduated_in = data.graduated_in();

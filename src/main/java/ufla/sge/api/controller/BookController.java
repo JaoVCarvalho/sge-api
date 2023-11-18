@@ -12,6 +12,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 import ufla.sge.api.domain.book.*;
 import ufla.sge.api.domain.subject.SubjectRepository;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/books")
 public class BookController {
@@ -22,44 +24,41 @@ public class BookController {
     @Autowired
     private SubjectRepository subjectRepository;
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PostMapping
     @Transactional
-    public ResponseEntity<BookDetailData> registerBook(@RequestBody @Valid BookRegistrationData data, UriComponentsBuilder uriBuilder){
-        var subject = subjectRepository.getReferenceById(data.subjects_id());
+    public ResponseEntity<BookDetailDTO> registerBook(@RequestBody @Valid BookRegistrationDTO data, UriComponentsBuilder uriBuilder){
+        var subject = subjectRepository.getReferenceById(data.subject_id());
         var book = new Book(data, subject);
 
         bookRepository.save(book);
 
         var uri = uriBuilder.path("/books/{id}").buildAndExpand(book.getId()).toUri();
 
-        return  ResponseEntity.created(uri).body(new BookDetailData(book));
+        return  ResponseEntity.created(uri).body(new BookDetailDTO(book));
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @GetMapping
-    public ResponseEntity<Page<BookListingData>> listBooks(@PageableDefault(size = 10, sort = "name") Pageable page){
-        var aux = bookRepository.findAllByBookWithSubjectName(page);
+    public ResponseEntity<List<BookListingDTO>> listBooks(){
+        var books = bookRepository.findAllByBookWithSubjectName();
 
-        return ResponseEntity.ok(aux);
+        return ResponseEntity.ok(books);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<BookListingData> listBook(@PathVariable Integer id){
-        var book = bookRepository.getReferenceById(id);
-
-        return ResponseEntity.ok(new BookListingData(book));
-    }
-
-    @PutMapping
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @PatchMapping ("/{id}")
     @Transactional
-    public ResponseEntity<BookDetailData> updateBook(@RequestBody @Valid BookUpdateData data){
+    public ResponseEntity<BookDetailDTO> updateBook(@RequestBody @Valid BookUpdateDTO data, @PathVariable Integer id){
         var subject = subjectRepository.getReferenceById(data.subject_id());
-        var book = bookRepository.getReferenceById(data.id());
+        var book = bookRepository.getReferenceById(id);
 
         book.update(data, subject);
 
-        return ResponseEntity.ok(new BookDetailData(book));
+        return ResponseEntity.ok(new BookDetailDTO(book));
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @DeleteMapping("/{id}")
     @Transactional
     public ResponseEntity deleteBook(@PathVariable Integer id){
