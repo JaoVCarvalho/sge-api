@@ -3,7 +3,7 @@ package ufla.sge.api.domain.book;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-public record BookRegistrationData(
+public record BookRegistrationDTO(
         @NotBlank
         String name,
         @NotBlank
@@ -11,5 +11,5 @@ public record BookRegistrationData(
         @NotBlank
         String author,
         @NotNull
-        Integer subjects_id) {
+        Integer subject_id) {
 }

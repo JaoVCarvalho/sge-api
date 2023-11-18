@@ -3,7 +3,7 @@ package ufla.sge.api.domain.teacher;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-public record TeacherUpdateData(
+public record TeacherUpdateDTO(
         @NotBlank
         String name,
         @NotNull

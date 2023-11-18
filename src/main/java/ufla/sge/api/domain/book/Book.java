@@ -24,20 +24,20 @@ public class Book {
     private String author;
 
     @ManyToOne
-    private Subject subjects;
+    private Subject subject;
 
-    public Book(BookRegistrationData data, Subject subjects){
+    public Book(BookRegistrationDTO data, Subject subject){
         this.name = data.name();
         this.edition = data.edition();
         this.author = data.author();
-        this.subjects = subjects;
+        this.subject = subject;
     }
 
-    public void update(BookUpdateData data, Subject subject){
+    public void update(BookUpdateDTO data, Subject subject){
         this.name = data.name();
         this.edition = data.edition();
         this.author = data.author();
-        this.subjects = subject;
+        this.subject = subject;
     }
 
 }

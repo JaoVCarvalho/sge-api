@@ -26,14 +26,14 @@ public class Subject {
     @ManyToOne
     private Teacher teacher;
 
-    public Subject(SubjectRegistrationData data, Teacher teacher){
+    public Subject(SubjectRegistrationDTO data, Teacher teacher){
         this.name = data.name();
         this.code = data.code();
         this.credits = data.credits();
         this.teacher = teacher;
     }
 
-    public void update(SubjectUpdateData data, Teacher teacher){
+    public void update(SubjectUpdateDTO data, Teacher teacher){
         this.name = data.name();
         this.code = data.code();
         this.credits = data.credits();
