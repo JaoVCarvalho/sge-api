@@ -28,13 +28,14 @@ public class BookController {
     @PostMapping
     @Transactional
     public ResponseEntity<BookDetailDTO> registerBook(@RequestBody @Valid BookRegistrationDTO data, UriComponentsBuilder uriBuilder){
+        Log log = Log.getInstance();
         var subject = subjectRepository.getReferenceById(data.subject_id());
         var book = new Book(data, subject);
 
         bookRepository.save(book);
 
         var uri = uriBuilder.path("/books/{id}").buildAndExpand(book.getId()).toUri();
-
+        log.log("Livro cadastrado!");
         return  ResponseEntity.created(uri).body(new BookDetailDTO(book));
     }
 
@@ -50,11 +51,12 @@ public class BookController {
     @PatchMapping ("/{id}")
     @Transactional
     public ResponseEntity<BookDetailDTO> updateBook(@RequestBody @Valid BookUpdateDTO data, @PathVariable Integer id){
+        Log log = Log.getInstance();
         var subject = subjectRepository.getReferenceById(data.subject_id());
         var book = bookRepository.getReferenceById(id);
 
         book.update(data, subject);
-
+        log.log("Livro atualizado!");
         return ResponseEntity.ok(new BookDetailDTO(book));
     }
 
@@ -62,8 +64,9 @@ public class BookController {
     @DeleteMapping("/{id}")
     @Transactional
     public ResponseEntity deleteBook(@PathVariable Integer id){
+        Log log = Log.getInstance();
         bookRepository.deleteById(id);
-
+        log.log("Livro removido!");
         return ResponseEntity.noContent().build();
     }
 }

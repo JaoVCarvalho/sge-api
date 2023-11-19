@@ -22,11 +22,12 @@ public class TeacherController {
     @PostMapping
     @Transactional
     public ResponseEntity<TeacherDetailDTO> registerTeacher(@RequestBody @Valid TeacherRegistrationDTO data, UriComponentsBuilder uriBuilder) {
+        Log log = Log.getInstance();
         var teacher = new Teacher(data);
         repository.save(teacher);
 
         var uri = uriBuilder.path("/teachers/{id}").buildAndExpand(teacher.getId()).toUri();
-
+        log.log("Professor cadastrado!");
         return ResponseEntity.created(uri).body(new TeacherDetailDTO(teacher));
     }
 
@@ -43,9 +44,10 @@ public class TeacherController {
     @PatchMapping("/{id}")
     @Transactional
     public ResponseEntity<TeacherDetailDTO> updateTeacher(@RequestBody @Valid TeacherUpdateDTO data, @PathVariable Integer id){
+        Log log = Log.getInstance();
         var teacher = repository.getReferenceById(id);
         teacher.update(data);
-
+        log.log("Professor atualizado!");
         return ResponseEntity.ok(new TeacherDetailDTO(teacher));
     }
 
@@ -53,8 +55,9 @@ public class TeacherController {
     @DeleteMapping("/{id}")
     @Transactional
     public ResponseEntity deleteTeacher(@PathVariable Integer id){
+        Log log = Log.getInstance();
         repository.deleteById(id);
-
+        log.log("Professor removido!");
         return ResponseEntity.noContent().build();
 
     }
