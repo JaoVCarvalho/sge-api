@@ -26,13 +26,14 @@ public class SubjectController {
     @PostMapping
     @Transactional
     public ResponseEntity<SubjectDetailDTO> registerSubject(@RequestBody @Valid SubjectRegistrationDTO data, UriComponentsBuilder uriBuilder){
+        Log log = Log.getInstance();
         var teacher = teacherRepository.getReferenceById(data.teacher_id());
         var subject = new Subject(data, teacher);
 
         subjectRepository.save(subject);
 
         var uri = uriBuilder.path("/subjects/{id}").buildAndExpand(subject.getId()).toUri();
-
+        log.log("Disciplina cadastrada!");
         return ResponseEntity.created(uri).body(new SubjectDetailDTO(subject));
 
     }
@@ -49,11 +50,12 @@ public class SubjectController {
     @PatchMapping ("/{id}")
     @Transactional
     public ResponseEntity<SubjectDetailDTO> updateSubject(@RequestBody @Valid SubjectUpdateDTO data, @PathVariable Integer id){
+        Log log = Log.getInstance();
         var teacher = teacherRepository.getReferenceById(data.teacher_id());
         var subject = subjectRepository.getReferenceById(id);
 
         subject.update(data, teacher);
-
+        log.log("Disciplina atualizada!");
         return ResponseEntity.ok(new SubjectDetailDTO(subject));
     }
 
@@ -61,8 +63,9 @@ public class SubjectController {
     @DeleteMapping("/{id}")
     @Transactional
     public ResponseEntity deleteSubject(@PathVariable Integer id){
+        Log log = Log.getInstance();
         subjectRepository.deleteById(id);
-
+        log.log("Disciplina removida!");
         return ResponseEntity.noContent().build();
     }
 
